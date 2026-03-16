@@ -38,61 +38,6 @@ const flowerSchema: any = {
   },
 };
 
-export const identifyFlower = async (base64Image: string, mimeType: string): Promise<ResponseData> => {
-  const ai = getAIClient();
-  
-  const prompt = `
-    이 이미지에 있는 꽃이 무엇인지 식별하고, 해당 꽃에 대한 상세 가드닝 가이드를 마크다운(Markdown) 형식으로 작성해 주세요.
-    
-    [지침]
-    1. 답변에 제목(예: '# 장미 가이드')을 포함하지 마세요.
-    2. 답변은 반드시 아래의 [구성 순서]를 엄격히 지켜야 합니다.
-
-    [구성 순서]
-    1. 식별 결과: 꽃의 이름(한글 및 영문)을 명확히 밝히세요.
-    2. 묘종 시기 및 개화 시기: 이 꽃을 심기 좋은 시기와 꽃이 피는 시기를 설명하세요.
-    3. 꽃의 특징: 이 꽃만의 매력이나 특징을 설명하세요.
-    4. 키울 때 주의사항: 관리법(물주기, 햇빛 등)을 상세히 알려주세요.
-    5. 인기 품종 TOP 5: 추천하는 품종 5가지를 간단히 소개해 주세요.
-
-    친절하고 전문적인 가드너의 톤으로 답변해 주세요.
-  `;
-
-  try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: [
-        {
-          inlineData: {
-            data: base64Image,
-            mimeType: mimeType
-          }
-        },
-        { text: prompt }
-      ],
-      config: {
-        temperature: 0.4,
-      }
-    });
-
-    const content = response.text;
-    if (!content) throw new Error("꽃을 식별하지 못했습니다.");
-
-    // 이름 추출 시도 (첫 줄이나 특정 패턴에서)
-    const nameMatch = content.match(/꽃의 이름.*:?\s*([가-힣\s]+)/) || content.match(/\*\*([가-힣\s]+)\*\*/);
-    const flowerName = nameMatch ? nameMatch[1].trim() : "식별된 꽃";
-
-    return {
-      type: 'detail',
-      name: flowerName,
-      content: content
-    };
-  } catch (error) {
-    console.error("Gemini Vision Error:", error);
-    throw new Error("이미지 분석 중 오류가 발생했습니다. 선명한 꽃 사진을 업로드해 주세요.");
-  }
-};
-
 export const getFlowerRecommendations = async (userQuery?: string): Promise<ResponseData> => {
   const ai = getAIClient();
   const date = new Date();

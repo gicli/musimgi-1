@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import LandingPage from './components/LandingPage';
 import FlowerCard from './components/FlowerCard';
-import { getFlowerRecommendations, identifyFlower } from './services/geminiService';
+import { getFlowerRecommendations } from './services/geminiService';
 import { ResponseData, ViewState } from './types';
 import { Loader2, RefreshCw, Leaf, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -48,32 +48,6 @@ const App: React.FC = () => {
     }
   };
 
-  const handleImageUpload = async (file: File) => {
-    setView('LOADING');
-    setError(null);
-    setCurrentQuery('사진 분석 결과');
-    
-    try {
-      const reader = new FileReader();
-      const base64Promise = new Promise<string>((resolve, reject) => {
-        reader.onload = () => {
-          const base64 = (reader.result as string).split(',')[1];
-          resolve(base64);
-        };
-        reader.onerror = reject;
-      });
-      reader.readAsDataURL(file);
-      
-      const base64Data = await base64Promise;
-      const data = await identifyFlower(base64Data, file.type);
-      setResponseData(data);
-      setView('RESULTS');
-    } catch (err: any) {
-      setError(err.message || "이미지 분석에 실패했습니다. 다른 사진으로 시도해 주세요.");
-      setView('ERROR');
-    }
-  };
-
   const handleReset = () => {
     setView('LANDING');
     setResponseData(null);
@@ -94,7 +68,6 @@ const App: React.FC = () => {
           >
             <LandingPage 
               onStart={handleStart} 
-              onImageUpload={handleImageUpload}
               onInstall={handleInstallClick}
               canInstall={!!deferredPrompt}
             />
