@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import LandingPage from './components/LandingPage.tsx';
-import FlowerCard from './components/FlowerCard.tsx';
-import { getFlowerRecommendations, identifyFlower } from './services/geminiService.ts';
-import { ResponseData, ViewState } from './types.ts';
+import LandingPage from './components/LandingPage';
+import FlowerCard from './components/FlowerCard';
+import { getFlowerRecommendations, identifyFlower } from './services/geminiService';
+import { ResponseData, ViewState } from './types';
 import { Loader2, RefreshCw, Leaf, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('LANDING');

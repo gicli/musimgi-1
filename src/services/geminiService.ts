@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { Flower, ResponseData } from "../types.ts";
+import { Flower, ResponseData } from "../types";
 
 const getAIClient = () => {
   const apiKey = process.env.GEMINI_API_KEY || "";
